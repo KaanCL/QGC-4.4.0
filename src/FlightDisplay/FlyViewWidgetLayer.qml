@@ -60,7 +60,7 @@ Item {
     property real   _margins:               ScreenTools.defaultFontPixelWidth / 2
     property real   _toolsMargin:           ScreenTools.defaultFontPixelWidth * 0.75
     property rect   _centerViewport:        Qt.rect(0, 0, width, height)
-    property real   _rightPanelWidth:       ScreenTools.defaultFontPixelWidth * 30
+    property real   _rightPanelWidth:       ScreenTools.defaultFontPixelWidth * 15
     property alias  _gripperMenu:           gripperOptions
     property real   _layoutMargin:          ScreenTools.defaultFontPixelWidth * 0.75
     property bool   _layoutSpacing:         ScreenTools.defaultFontPixelWidth
@@ -474,7 +474,9 @@ FlyViewInstrumentPanel {
       anchors.margins:            _toolsMargin
       anchors.top:                 parent.top
       anchors.right:              rightCol.right
-      anchors.topMargin: Screen.width  * 0.01
+      width:                      _rightPanelWidth
+      spacing:                    _toolsMargin
+       anchors.topMargin: Screen.width  * 0.01
       visible:                   true// QGroundControl.corePlugin.options.flyView.showInstrumentPanel && multiVehiclePanelSelector.showSingleVehiclePanel
       availableHeight:            parent.height - y - _toolsMargin
 

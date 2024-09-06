@@ -31,7 +31,7 @@ ColumnLayout {
     Rectangle {
         id:                 visualInstrument
         height:             _outerRadius * 2
-        width:              attitude.width * 1.5
+        Layout.fillWidth:   true
         radius:             _outerRadius
         color:              qgcPal.window
 
@@ -41,11 +41,9 @@ ColumnLayout {
             id:                     attitude
             anchors.rightMargin:     _topBottomMargin
             anchors.right:           parent.right
-
             size:                   _innerRadius * 2
             vehicle:                globals.activeVehicle
             anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         // QGCCompassWidget {
