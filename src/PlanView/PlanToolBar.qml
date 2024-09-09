@@ -1,4 +1,5 @@
 import QtQuick          2.3
+import QtQuick.Window 2.2
 import QtQuick.Controls 1.2
 import QtQuick.Layouts  1.2
 import QtQuick.Dialogs  1.2
@@ -12,8 +13,17 @@ import QGroundControl.Palette           1.0
 // Toolbar for Plan View
 Rectangle {
     id:                 _root
-    color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.8) : Qt.rgba(0,0,0,0.75)
-    anchors.fill:       parent
+    width:             parent.width
+    height:           Screen.width * 0.08
+    color:            qgcPal.window
+
+
+    property var    planMasterController
+
+    property var    _activeVehicle:         QGroundControl.multiVehicleManager.activeVehicle
+    property real   _controllerProgressPct: planMasterController.missionController.progressPct
+     property int toolBarTextSize : Screen.width / 125
+
     /// Bottom single pixel divider
     Rectangle {
         anchors.left:   parent.left
@@ -24,14 +34,14 @@ Rectangle {
         visible:        qgcPal.globalTheme === QGCPalette.Light
     }
     RowLayout {
-        anchors.bottomMargin:   1
-        anchors.rightMargin:    ScreenTools.defaultFontPixelWidth / 2
-        anchors.fill:           parent
-        spacing:                ScreenTools.defaultFontPixelWidth * 2
-
+          id:                     viewButtonRow
+          anchors.bottomMargin:   1
+          anchors.top:            parent.top
+          anchors.bottom:         parent.bottom
+          spacing:                ScreenTools.defaultFontPixelWidth / 2
 
         QGCToolBarButton {
-            id:                 settingsButton
+            id:                  currentButton
             Layout.fillHeight:  true
             icon.source:        "/qmlimages/PaperPlane.svg"
             checked:            false
@@ -40,6 +50,42 @@ Rectangle {
                 mainWindow.showFlyView()
             }
         }
+
+        QGCToolBarButton {
+           id:                     settingsButton
+           Layout.preferredHeight: viewButtonRow.height
+           icon.source:           "/res/gear-white.svg"
+           logo:                   true
+           onClicked:             mainWindow.showSettingsTool()
+       }
+
+        QGCToolBarButton {
+           id:                     folderButton
+           Layout.preferredHeight: viewButtonRow.height
+           icon.source:           "/InstrumentValueIcons/folder-white.svg"
+           logo:                   true
+           onClicked: folderSettingsDialog.visible = !folderSettingsDialog.visible
+       }
+
+        QGCButton {
+            text:               qsTr("Lojistik")
+            Layout.fillWidth:   true
+            onClicked:{ currentMissionMode = 0
+                        console.log(currentMissionMode)
+            }
+
+
+        }
+
+        QGCButton {
+            text:               qsTr("Gözlem")
+            Layout.fillWidth:   true
+            onClicked: {currentMissionMode = 1
+                       console.log(currentMissionMode)
+             }
+        }
+
+
 
         Loader {
             source:             "PlanToolBarIndicators.qml"

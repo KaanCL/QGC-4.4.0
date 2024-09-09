@@ -138,13 +138,13 @@ ApplicationWindow {
     }
 
     function showFlyView() {
-        viewSwitch(toolbar.flyViewToolbar)
+        // viewSwitch(toolbar.flyViewToolbar)
         flightView.visible = true
         planView.visible = false
     }
 
     function showPlanView() {
-         viewSwitch(toolbar.planViewToolbar)
+        // viewSwitch(toolbar.planViewToolbar)
         flightView.visible = false
         planView.visible = true
     }
@@ -276,12 +276,12 @@ ApplicationWindow {
 
     //-------------------------------------------------------------------------
     /// Toolbar
-    header: MainToolBar {
-        id:         toolbar
-        height:     ScreenTools.toolbarHeight
-        visible:    flightView.visible ? false
-                                       : true
-    }
+    // header: MainToolBar {
+    //     id:         toolbar
+    //     height:     ScreenTools.toolbarHeight
+    //     visible:    flightView.visible ? false
+    //                                    : true
+    // }
 
     footer: LogReplayStatusBar {
         visible: QGroundControl.settingsManager.flyViewSettings.showLogReplayStatusBar.rawValue

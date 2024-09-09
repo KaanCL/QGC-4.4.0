@@ -53,10 +53,17 @@ Item {
     property bool   _promptForPlanUsageShowing:         false
 
     readonly property var       _layers:                [_layerMission, _layerGeoFence, _layerRallyPoints]
+    readonly property var       _missionModeLayers:      [_logisticsMission , _observationMission]
+
 
     readonly property int       _layerMission:              1
     readonly property int       _layerGeoFence:             2
     readonly property int       _layerRallyPoints:          3
+
+
+    property int currentMissionMode: 0
+
+
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
 
     function mapCenter() {
@@ -66,6 +73,8 @@ Item {
         coordinate.altitude  = coordinate.altitude.toFixed(_decimalPlaces)
         return coordinate
     }
+
+
 
     property bool _firstMissionLoadComplete:    false
     property bool _firstFenceLoadComplete:      false
@@ -319,9 +328,23 @@ Item {
         }
     }
 
+    PlanToolBar {
+        width: parent.width
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        z:3
+        id:                     planToolBar
+        planMasterController:   _planMasterController
+
+    }
+
     Item {
         id:             panel
-        anchors.fill:   parent
+        anchors.left:   parent.left
+        anchors.right:  parent.right
+        anchors.top:    planToolBar.bottom
+        anchors.bottom: parent.bottom
 
         FlightMap {
             id:                         editorMap
@@ -357,6 +380,8 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     // Take focus to close any previous editing
+
+                     if(!folderSettingsDialog.visible){
                     editorMap.focus = true
                     var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
                     coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
@@ -378,7 +403,10 @@ Item {
                             _rallyPointController.addPoint(coordinate)
                         }
                         break
-                    }
+                    }   
+                 }
+                    else{
+                      folderSettingsDialog.visible = false}
                 }
             }
 
@@ -518,20 +546,20 @@ Item {
             ToolStripActionList {
                 id: toolStripActionList
                 model: [
-                    ToolStripAction {
-                        text:           qsTr("Fly")
-                        iconSource:     "/qmlimages/PaperPlane.svg"
-                        onTriggered:    mainWindow.showFlyView()
-                    },
-                    ToolStripAction {
-                        text:                   qsTr("File")
-                        enabled:                !_planMasterController.syncInProgress
-                        visible:                true
-                        showAlternateIcon:      _planMasterController.dirty
-                        iconSource:             "/qmlimages/MapSync.svg"
-                        alternateIconSource:    "/qmlimages/MapSyncChanged.svg"
-                        dropPanelComponent:     syncDropPanel
-                    },
+                    // ToolStripAction {
+                    //     text:           qsTr("Fly")
+                    //     iconSource:     "/qmlimages/PaperPlane.svg"
+                    //     onTriggered:    mainWindow.showFlyView()
+                    // },
+                    // ToolStripAction {
+                    //     text:                   qsTr("File")
+                    //     enabled:                !_planMasterController.syncInProgress
+                    //     visible:                true
+                    //     showAlternateIcon:      _planMasterController.dirty
+                    //     iconSource:             "/qmlimages/MapSync.svg"
+                    //     alternateIconSource:    "/qmlimages/MapSyncChanged.svg"
+                    //     dropPanelComponent:     syncDropPanel
+                    // },
                     ToolStripAction {
                         text:       qsTr("Takeoff")
                         iconSource: "/res/takeoff.svg"
@@ -547,8 +575,21 @@ Item {
                         text:               _editingLayer == _layerRallyPoints ? qsTr("Rally Point") : qsTr("Waypoint")
                         iconSource:         "/qmlimages/MapAddMission.svg"
                         enabled:            toolStrip._isRallyLayer ? true : _missionController.flyThroughCommandsAllowed
-                        visible:            toolStrip._isRallyLayer || toolStrip._isMissionLayer
+                        visible:            toolStrip._isRallyLayer || toolStrip._isMissionLayer && currentMissionMode == 0
                         checkable:          true
+                    },
+                    ToolStripAction {
+                        text:               _singleComplexItem ? _missionController.complexMissionItemNames[0] : qsTr("Pattern")
+                        iconSource:         "/qmlimages/MapDrawShape.svg"
+                        enabled:            _missionController.flyThroughCommandsAllowed
+                        visible:            toolStrip._isMissionLayer && currentMissionMode == 1
+                        dropPanelComponent: _singleComplexItem ? undefined : patternDropPanel
+                        onTriggered: {
+                            toolStrip.allAddClickBoolsOff()
+                            if (_singleComplexItem) {
+                                insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0])
+                            }
+                        }
                     },
                     ToolStripAction {
                         text:               _missionController.isROIActive ? qsTr("Cancel ROI") : qsTr("ROI")
@@ -567,23 +608,10 @@ Item {
                         onMyAddROIOnClickChanged: checked = _addROIOnClick
                     },
                     ToolStripAction {
-                        text:               _singleComplexItem ? _missionController.complexMissionItemNames[0] : qsTr("Pattern")
-                        iconSource:         "/qmlimages/MapDrawShape.svg"
-                        enabled:            _missionController.flyThroughCommandsAllowed
-                        visible:            toolStrip._isMissionLayer
-                        dropPanelComponent: _singleComplexItem ? undefined : patternDropPanel
-                        onTriggered: {
-                            toolStrip.allAddClickBoolsOff()
-                            if (_singleComplexItem) {
-                                insertComplexItemAfterCurrent(_missionController.complexMissionItemNames[0])
-                            }
-                        }
-                    },
-                    ToolStripAction {
                         text:       _planMasterController.controllerVehicle.multiRotor ? qsTr("Return") : qsTr("Land")
                         iconSource: "/res/rtl.svg"
                         enabled:    _missionController.isInsertLandValid
-                        visible:    toolStrip._isMissionLayer
+                        visible:    toolStrip._isMissionLayer && currentMissionMode == 0
                         onTriggered: {
                             toolStrip.allAddClickBoolsOff()
                             insertLandItemAfterCurrent()
@@ -750,7 +778,7 @@ Item {
             anchors.left:       mapScale.left
             anchors.right:      rightPanel.left
             anchors.bottom:     parent.bottom
-            height:             ScreenTools.defaultFontPixelHeight * 7
+            height:             ScreenTools.defaultFontPixelHeight * 5
             missionController:  _missionController
             visible:            _internalVisible && _editingLayer === _layerMission && QGroundControl.corePlugin.options.showMissionStatus
 
@@ -1057,100 +1085,100 @@ Item {
     }
 
 
-    // Rectangle{
-    //    id:folderSettingsDialog
-    //    color:  Qt.rgba(qgcPal.window.r, qgcPal.window.g, qgcPal.window.b, 0.9)
-    //    width:  Screen.width * 0.3
-    //    height:  Screen.width * 0.2
-    //    visible: false
-    //    anchors.top: planToolBar.bottom
-    //    anchors.left: parent.left
-    //    anchors.leftMargin: Screen.width * 0.08
-    //    ColumnLayout {
-    //        id:         columnHolder
-    //        spacing:    _margin
-    //        anchors.horizontalCenter:  parent.horizontalCenter
+    Rectangle{
+       id:folderSettingsDialog
+       color:  Qt.rgba(qgcPal.window.r, qgcPal.window.g, qgcPal.window.b, 0.9)
+       width:  Screen.width * 0.35
+       height:  Screen.width * 0.25
+       visible: false
+       anchors.top: planToolBar.bottom
+       anchors.left: parent.left
+       anchors.leftMargin: Screen.width * 0.08
+       ColumnLayout {
+           id:         columnHolder
+           spacing:    _margin
+           anchors.horizontalCenter:  parent.horizontalCenter
 
-    //        property string _overwriteText: qsTr("Plan overwrite")
+           property string _overwriteText: qsTr("Plan overwrite")
 
-    //        QGCLabel {
-    //            id:                 unsavedChangedLabel
-    //            //Layout.fillWidth:   true
-    //            wrapMode:           Text.WordWrap
-    //            text:               globals.activeVehicle ?
-    //                                    qsTr("Kaydedilmemiş değişiklikleriniz var.") :
-    //                                    qsTr("Kaydedilmemiş değişiklikleriniz var. ")
-    //            visible:            _planMasterController.dirty
-    //        }
-    //        SectionHeader {
-    //            id:                 storageSection
-    //            Layout.fillWidth:   true
-    //            text:               qsTr("Storage")
-    //        }
+           QGCLabel {
+               id:                 unsavedChangedLabel
+               //Layout.fillWidth:   true
+               wrapMode:           Text.WordWrap
+               text:               globals.activeVehicle ?
+                                       qsTr("Kaydedilmemiş değişiklikleriniz var.") :
+                                       qsTr("Kaydedilmemiş değişiklikleriniz var. ")
+               visible:            _planMasterController.dirty
+           }
+           SectionHeader {
+               id:                 storageSection
+               Layout.fillWidth:   true
+               text:               qsTr("Storage")
+           }
 
-    //        GridLayout {
-    //            columns:            3
-    //            rowSpacing:         _margin
-    //            columnSpacing:      ScreenTools.defaultFontPixelWidth
-    //            visible:            storageSection.visible
+           GridLayout {
+               columns:            3
+               rowSpacing:         _margin
+               columnSpacing:      ScreenTools.defaultFontPixelWidth
+               visible:            storageSection.visible
 
-    //            QGCButton {
-    //                text:               qsTr("Open...")
-    //                Layout.fillWidth:   true
-    //                enabled:            !_planMasterController.syncInProgress
-    //                onClicked: {
-    //                    folderSettingsDialog.visible = false
-    //                    if (_planMasterController.dirty) {
-    //                        showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
-    //                    } else {
-    //                        _planMasterController.loadFromSelectedFile()
-    //                    }
-    //                }
-    //            }
+               QGCButton {
+                   text:               qsTr("Open...")
+                   Layout.fillWidth:   true
+                   enabled:            !_planMasterController.syncInProgress
+                   onClicked: {
+                       folderSettingsDialog.visible = false
+                       if (_planMasterController.dirty) {
+                           showLoadFromFileOverwritePrompt(columnHolder._overwriteText)
+                       } else {
+                           _planMasterController.loadFromSelectedFile()
+                       }
+                   }
+               }
 
-    //            QGCButton {
-    //                text:               qsTr("Save")
-    //                Layout.fillWidth:   true
-    //                enabled:            !_planMasterController.syncInProgress && _planMasterController.currentPlanFile !== ""
-    //                onClicked: {
-    //                   folderSettingsDialog.visible = false
-    //                    if(_planMasterController.currentPlanFile !== "") {
-    //                        _planMasterController.saveToCurrent()
-    //                    } else {
-    //                        _planMasterController.saveToSelectedFile()
-    //                    }
-    //                }
-    //            }
+               QGCButton {
+                   text:               qsTr("Save")
+                   Layout.fillWidth:   true
+                   enabled:            !_planMasterController.syncInProgress && _planMasterController.currentPlanFile !== ""
+                   onClicked: {
+                      folderSettingsDialog.visible = false
+                       if(_planMasterController.currentPlanFile !== "") {
+                           _planMasterController.saveToCurrent()
+                       } else {
+                           _planMasterController.saveToSelectedFile()
+                       }
+                   }
+               }
 
-    //            QGCButton {
-    //                text:               qsTr("Save As...")
-    //                Layout.fillWidth:   true
-    //                enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
-    //                onClicked: {
-    //                    folderSettingsDialog.visible = false
-    //                    _planMasterController.saveToSelectedFile()
-    //                }
-    //            }
+               QGCButton {
+                   text:               qsTr("Save As...")
+                   Layout.fillWidth:   true
+                   enabled:            !_planMasterController.syncInProgress && _planMasterController.containsItems
+                   onClicked: {
+                       folderSettingsDialog.visible = false
+                       _planMasterController.saveToSelectedFile()
+                   }
+               }
 
-    //            QGCButton {
-    //                Layout.columnSpan:  3
-    //                Layout.fillWidth:   true
-    //                text:               qsTr("Save Mission Waypoints As KML...")
-    //                enabled:            !_planMasterController.syncInProgress && _visualItems.count > 1
-    //                onClicked: {
-    //                    // First point does not count
-    //                    if (_visualItems.count < 2) {
-    //                        mainWindow.showMessageDialog(qsTr("KML"), qsTr("You need at least one item to create a KML."))
-    //                        return
-    //                    }
-    //                   folderSettingsDialog.visible = false
-    //                    _planMasterController.saveKmlToSelectedFile()
-    //                }
-    //            }
-    //        }
+               QGCButton {
+                   Layout.columnSpan:  3
+                   Layout.fillWidth:   true
+                   text:               qsTr("Save Mission Waypoints As KML...")
+                   enabled:            !_planMasterController.syncInProgress && _visualItems.count > 1
+                   onClicked: {
+                       // First point does not count
+                       if (_visualItems.count < 2) {
+                           mainWindow.showMessageDialog(qsTr("KML"), qsTr("You need at least one item to create a KML."))
+                           return
+                       }
+                      folderSettingsDialog.visible = false
+                       _planMasterController.saveKmlToSelectedFile()
+                   }
+               }
+           }
 
-    //        }
-    //    }
+           }
+       }
 
 
 
