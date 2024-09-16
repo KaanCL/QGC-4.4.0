@@ -67,6 +67,24 @@ import android.bluetooth.BluetoothDevice;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 
+import com.skydroid.rcsdk.KeyManager;
+import com.skydroid.rcsdk.PayloadManager;
+import com.skydroid.rcsdk.PipelineManager;
+import com.skydroid.rcsdk.RCSDKManager;
+import com.skydroid.rcsdk.SDKManagerCallBack;
+import com.skydroid.rcsdk.comm.CommListener;
+import com.skydroid.rcsdk.common.Uart;
+import com.skydroid.rcsdk.common.callback.CompletionCallbackWith;
+import com.skydroid.rcsdk.common.callback.KeyListener;
+import com.skydroid.rcsdk.common.error.SkyException;
+import com.skydroid.rcsdk.common.payload.AKey;
+import com.skydroid.rcsdk.common.payload.C12;
+import com.skydroid.rcsdk.common.payload.PayloadType;
+import com.skydroid.rcsdk.common.pipeline.Pipeline;
+import com.skydroid.rcsdk.key.AirLinkKey;
+import com.skydroid.rcsdk.key.RemoteControllerKey;
+
+
 import com.hoho.android.usbserial.driver.*;
 import org.qtproject.qt5.android.bindings.QtActivity;
 import org.qtproject.qt5.android.bindings.QtApplication;
@@ -92,6 +110,37 @@ public class QGCActivity extends QtActivity
     private final static ExecutorService m_Executor = Executors.newSingleThreadExecutor();
 
     private static int BatteryLevel ;
+
+    private PayloadManager payloadManager;
+    private C12 c12Camera = null;
+
+    private int preZoom = 0;
+    private int prePoz = 0;
+
+
+
+    private final KeyListener<int[]> keyH16ChannelsListener = new KeyListener<int[]>(){
+
+    @Override
+    public void onValueChange(int[] ints , int[] t1){
+
+        controlCamera(t1[12],0);
+        controlCamera(t1[13],1);
+        controlCamera(t1[11],2);
+        controlCamera(t1[5],3);
+        }
+
+    };
+
+
+    // private final MutableLiveData<String> infoliveData = new MutableLiveData<String>();
+    // private final MutableLiveData<Integer> infoliveyaw = new MutableLiveData<Integer>();
+    // private final MutableLiveData<Integer> infolivepitch = new MutableLiveData<Integer>();
+    // private final MutableLiveData<Integer> infoliveAux = new MutableLiveData<Integer>();
+    // private final MutableLiveData<Integer> infoliveSwitch = new MutableLiveData<Integer>();
+
+
+
 
     private final static UsbIoManager.Listener m_Listener =
             new UsbIoManager.Listener()
@@ -222,6 +271,42 @@ public class QGCActivity extends QtActivity
 
         _usbManager = (UsbManager)_instance.getSystemService(Context.USB_SERVICE);
 
+        RCSDKManager.INSTANCE.initSDK(this, new SDKManagerCallBack() {
+            @Override
+            public void onRcConnected() {
+
+           /*  pipeline =  PipelineManager.INSTANCE.createPipeline(Uart.UART0);
+             pipeline.setOnCommListener(getCommListener(0,""));
+
+             PipelineManager.INSTANCE.connectPipeline(pipeline);*/
+
+
+            }
+
+            @Override
+            public void onRcConnectFail(SkyException e) {
+
+            }
+
+            @Override
+            public void onRcDisconnect() {
+
+            }
+        });
+
+        RCSDKManager.INSTANCE.connectToRC();
+
+
+         c12Camera = (C12)PayloadManager.INSTANCE.getUDPPayload(PayloadType.C12,5000,"192.168.144.108",5000);
+
+
+         if(c12Camera != null){
+             PayloadManager.INSTANCE.connectPayload(c12Camera);
+
+        }
+
+         getChannels();
+
         // Register for USB Detach and USB Permission intent
         IntentFilter filter = new IntentFilter();
        final IntentFilter batteryFilter = new IntentFilter();
@@ -274,6 +359,82 @@ public class QGCActivity extends QtActivity
         } catch(Exception e) {
            Log.e(TAG, "Exception: " + e);
         }
+    }
+
+    private void getChannels(){
+        KeyManager.INSTANCE.cancelListen(keyH16ChannelsListener);
+        KeyManager.INSTANCE.listen(RemoteControllerKey.INSTANCE.getKeyH16Channels(), keyH16ChannelsListener);
+    }
+
+
+    private void controlCamera(float v , int proc){
+
+      if(c12Camera!=null){
+
+         float value = joyStickMap(v,proc) ;
+
+         switch (proc){
+             case 0:
+
+                 if (value != 0) {
+                     c12Camera.controlYaw(value);
+                     System.out.println("YAW: " + value);}
+                 break;
+             case 1:
+                 if (value != 0) {
+                     c12Camera.controlPitch(value);
+                     System.out.println("PITCH: " + value);}
+                 break;
+             case 2:
+                 int intValue = (int)value;
+
+                   if(intValue != preZoom){
+                     c12Camera.setZoomRatios(intValue,null);
+                     System.out.println("ZOOM RATIO: " + intValue);
+                     preZoom = intValue;
+                 }
+                 break;
+             case 3:
+                 if(v != prePoz) {
+                     if (v == 2000) {
+                         c12Camera.akey(AKey.TOP);
+                     } else if (v == 1000) {
+                         c12Camera.akey(AKey.DOWN);
+                     } else {
+                         c12Camera.akey(AKey.MID);
+                     }
+                     prePoz = (int)v;
+                 }
+                break;
+      }
+   }
+}
+    private static float joyStickMap(float inputValue , int proc){
+
+        float inputMin = 1000 , inputMax = 2000 , outputMin = 0 , outputMax = 0;
+
+        switch(proc){
+
+            case 0:
+                outputMin = -150f;
+                outputMax = 150f;
+                break;
+
+            case 1:
+                outputMin = -90f;
+                outputMax = 90f;
+                break;
+            case 2:
+                outputMin = 0;
+                outputMax = 4;
+                break;
+            default:
+                outputMin = 0;
+                outputMax = 0;
+            }
+
+     return (inputValue - inputMin) * (outputMax - outputMin) / (inputMax - inputMin) + outputMin;
+
     }
 
     @Override
