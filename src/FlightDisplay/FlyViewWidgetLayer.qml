@@ -98,7 +98,7 @@ Item {
     property int telemetryRecSize: Screen.width * 0.15
     property int telemetryImageSize : Screen.width * 0.02
     property int telemetryFontSize:  Screen.width / 125
-    property int buttonRadius: width * 0.01
+    property int buttonRadius: Screen.width * 0.01
     property bool flagCommunicationLost: false
     property bool guidedType :_guidedController.showTakeoff || !_guidedController.showLand
 

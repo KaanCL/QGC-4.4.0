@@ -33,7 +33,7 @@ Rectangle {
     property real _minAMSLAltitude:     isNaN(terrainProfile.minAMSLAlt) ? 0 : terrainProfile.minAMSLAlt
     property real _maxAMSLAltitude:     isNaN(terrainProfile.maxAMSLAlt) ? 100 : terrainProfile.maxAMSLAlt
     property real _missionDistance:     isNaN(missionController.missionDistance) ? 100 : missionController.missionDistance
-    property var  _unitsConversion:     QGroundControl.unitsConversion
+    property var  _unitsConversionterrainStatus:     QGroundControl.unitsConversion
 
     QGCPalette { id: qgcPal }
 
@@ -190,7 +190,7 @@ Rectangle {
 
                             QGCMouseArea {
                                 anchors.fill:   parent
-                                onClicked:      root.setCurrentSeqNum(object.sequenceNumber)
+                                onClicked:      {root.setCurrentSeqNum(object.sequenceNumber)}
                             }
 
                             QGCLabel {

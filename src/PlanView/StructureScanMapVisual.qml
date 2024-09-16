@@ -47,6 +47,7 @@ Item {
         interactive:        _missionItem.isCurrentItem && _root.interactive
         borderWidth:        1
         borderColor:        "black"
+        anchors.horizontalCenter: parent.horizontalCenter
         interiorColor:      "green"
         altColor:           "red"
         interiorOpacity:    0.5 * _root.opacity
@@ -58,6 +59,7 @@ Item {
         interactive:        false
         borderWidth:        2
         borderColor:        "white"
+        anchors.horizontalCenter: parent.horizontalCenter
         interiorOpacity:    _root.opacity
     }
 

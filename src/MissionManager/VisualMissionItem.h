@@ -281,6 +281,8 @@ protected:
     /// This is used to reference any subsequent mission items which do not specify a coordinate.
     QmlObjectListModel  _childItems;
 
+
+
 protected:
     void    _setBoundingCube                (QGCGeoBoundingCube bc);
 

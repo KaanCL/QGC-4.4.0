@@ -540,6 +540,12 @@ void MissionController::_insertComplexMissionItemWorker(const QGeoCoordinate& ma
 
 void MissionController::removeVisualItem(int viIndex)
 {
+    for (int var = 0; var < _visualItems->count() ; ++var) {
+        qDebug() << "items count: "<<var;
+
+    }
+
+    qDebug() << "remove index" << viIndex;
     if (viIndex <= 0 || viIndex >= _visualItems->count()) {
         qWarning() << "MissionController::removeVisualItem called with bad index - count:index" << _visualItems->count() << viIndex;
         return;
@@ -599,6 +605,13 @@ void MissionController::removeVisualItem(int viIndex)
         _allItemsRemoved();
     }
 }
+
+int MissionController::getVisualItemIndex(VisualMissionItem *visualItem)
+{
+    return _visualItems->indexOf(visualItem);
+
+
+};
 
 void MissionController::removeAll(void)
 {

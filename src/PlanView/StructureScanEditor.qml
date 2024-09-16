@@ -62,7 +62,7 @@ Rectangle {
                 wrapMode:           Text.WordWrap
                 horizontalAlignment:    Text.AlignHCenter
                 text:               qsTr("Use the Polygon Tools to create the polygon which outlines the structure.")
-                visible:        !missionItem.structurePolygon.isValid || missionItem.wizardMode
+                visible:           !missionItem.structurePolygon.isValid || missionItem.wizardMode
             }
 
         ColumnLayout {

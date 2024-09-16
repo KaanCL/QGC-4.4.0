@@ -57,14 +57,14 @@ Rectangle {
         anchors.top:        parent.top
         spacing:            _margin
 
-        QGCLabel {
-            width:          parent.width
-            wrapMode:       Text.WordWrap
-            font.pointSize: ScreenTools.smallFontPointSize
-            text:           missionItem.rawEdit ?
-                                qsTr("Provides advanced access to all commands/parameters. Be very careful!") :
-                                missionItem.commandDescription
-        }
+        // QGCLabel {
+        //     width:          parent.width
+        //     wrapMode:       Text.WordWrap
+        //     font.pointSize: ScreenTools.smallFontPointSize
+        //     text:           missionItem.rawEdit ?
+        //                         qsTr("Provides advanced access to all commands/parameters. Be very careful!") :
+        //                         missionItem.commandDescription
+        // }
 
         ColumnLayout {
             anchors.left:       parent.left
@@ -157,18 +157,18 @@ Rectangle {
                             text:               qsTr("Altitude")
                             font.pointSize:     ScreenTools.smallFontPointSize
                         }
-                        QGCLabel {
-                            id:                 altModeLabel
-                            Layout.alignment:   Qt.AlignBaseline
-                            visible:            _globalAltMode !== QGroundControl.AltitudeModeRelative
-                        }
-                        QGCColoredImage {
-                            height:     ScreenTools.defaultFontPixelHeight / 2
-                            width:      height
-                            source:     "/res/DropArrow.svg"
-                            color:      qgcPal.text
-                            visible:    _globalAltModeIsMixed
-                        }
+                        // QGCLabel {
+                        //     id:                 altModeLabel
+                        //     Layout.alignment:   Qt.AlignBaseline
+                        //     visible:            _globalAltMode !== QGroundControl.AltitudeModeRelative
+                        // }
+                        // QGCColoredImage {
+                        //     height:     ScreenTools.defaultFontPixelHeight / 2
+                        //     width:      height
+                        //     source:     "/res/DropArrow.svg"
+                        //     color:      qgcPal.text
+                        //     visible:    _globalAltModeIsMixed
+                        // }
                     }
                 }
 
@@ -213,74 +213,74 @@ Rectangle {
                 }
             }
 
-            GridLayout {
-                anchors.left:   parent.left
-                anchors.right:  parent.right
-                flow:           GridLayout.TopToBottom
-                rows:           missionItem.textFieldFacts.count +
-                                missionItem.nanFacts.count +
-                                (missionItem.speedSection.available ? 1 : 0)
-                columns:        2
+            // GridLayout {
+            //     anchors.left:   parent.left
+            //     anchors.right:  parent.right
+            //     flow:           GridLayout.TopToBottom
+            //     rows:           missionItem.textFieldFacts.count +
+            //                     missionItem.nanFacts.count +
+            //                     (missionItem.speedSection.available ? 1 : 0)
+            //     columns:        2
 
-                Repeater {
-                    model: missionItem.textFieldFacts
+            //     Repeater {
+            //         model: missionItem.textFieldFacts
 
-                    QGCLabel { text: object.name }
-                }
+            //         QGCLabel { text: object.name }
+            //     }
 
-                Repeater {
-                    model: missionItem.nanFacts
+            //     Repeater {
+            //         model: missionItem.nanFacts
 
-                    QGCCheckBox {
-                        text:           object.name
-                        checked:        !isNaN(object.rawValue)
-                        onClicked:      object.rawValue = checked ? 0 : NaN
-                    }
-                }
+            //         QGCCheckBox {
+            //             text:           object.name
+            //             checked:        !isNaN(object.rawValue)
+            //             onClicked:      object.rawValue = checked ? 0 : NaN
+            //         }
+            //     }
 
-                QGCCheckBox {
-                    id:         flightSpeedCheckbox
-                    text:       qsTr("Flight Speed")
-                    checked:    missionItem.speedSection.specifyFlightSpeed
-                    onClicked:  missionItem.speedSection.specifyFlightSpeed = checked
-                    visible:    missionItem.speedSection.available
-                }
+            //     QGCCheckBox {
+            //         id:         flightSpeedCheckbox
+            //         text:       qsTr("Flight Speed")
+            //         checked:    missionItem.speedSection.specifyFlightSpeed
+            //         onClicked:  missionItem.speedSection.specifyFlightSpeed = checked
+            //         visible:    missionItem.speedSection.available
+            //     }
 
 
-                Repeater {
-                    model: missionItem.textFieldFacts
+            //     Repeater {
+            //         model: missionItem.textFieldFacts
 
-                    FactTextField {
-                        showUnits:          true
-                        fact:               object
-                        Layout.fillWidth:   true
-                        enabled:            !object.readOnly
-                    }
-                }
+            //         FactTextField {
+            //             showUnits:          true
+            //             fact:               object
+            //             Layout.fillWidth:   true
+            //             enabled:            !object.readOnly
+            //         }
+            //     }
 
-                Repeater {
-                    model: missionItem.nanFacts
+            //     Repeater {
+            //         model: missionItem.nanFacts
 
-                    FactTextField {
-                        showUnits:          true
-                        fact:               object
-                        Layout.fillWidth:   true
-                        enabled:            !isNaN(object.rawValue)
-                    }
-                }
+            //         FactTextField {
+            //             showUnits:          true
+            //             fact:               object
+            //             Layout.fillWidth:   true
+            //             enabled:            !isNaN(object.rawValue)
+            //         }
+            //     }
 
-                FactTextField {
-                    fact:               missionItem.speedSection.flightSpeed
-                    Layout.fillWidth:   true
-                    enabled:            flightSpeedCheckbox.checked
-                    visible:            missionItem.speedSection.available
-                }
-            }
+            //     FactTextField {
+            //         fact:               missionItem.speedSection.flightSpeed
+            //         Layout.fillWidth:   true
+            //         enabled:            flightSpeedCheckbox.checked
+            //         visible:            missionItem.speedSection.available
+            //     }
+            // }
 
-            CameraSection {
-                checked:    missionItem.cameraSection.settingsSpecified
-                visible:    missionItem.cameraSection.available
-            }
+            // CameraSection {
+            //     checked:    missionItem.cameraSection.settingsSpecified
+            //     visible:    missionItem.cameraSection.available
+            // }
         }
     }
 }

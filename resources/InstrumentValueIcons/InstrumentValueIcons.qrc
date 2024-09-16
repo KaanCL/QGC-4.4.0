@@ -365,5 +365,7 @@
         <file>InstrumentValueIcons.qrc</file>
         <file>gimbal-1.svg</file>
         <file>gimbal-2.svg</file>
+        <file alias="vector_polygon.svg">vector_polygon.svg</file>
+        <file alias="rec.svg">rec.svg</file>
     </qresource>
 </RCC>

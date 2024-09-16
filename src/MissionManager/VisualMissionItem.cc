@@ -78,6 +78,7 @@ const VisualMissionItem& VisualMissionItem::operator=(const VisualMissionItem& o
     return *this;
 }
 
+
 VisualMissionItem::~VisualMissionItem()
 {    
 }

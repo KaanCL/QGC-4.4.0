@@ -76,10 +76,10 @@ Rectangle {
             spacing:            _margin
             visible:            transectAreaDefinitionComplete && !_missionItem.wizardMode
 
-            TransectStyleComplexItemTabBar {
-                id:                 tabBar
-                Layout.fillWidth:   true
-            }
+            // TransectStyleComplexItemTabBar {
+            //     id:                 tabBar
+            //     Layout.fillWidth:   true
+            // }
 
             // Grid tab
             ColumnLayout {
@@ -104,15 +104,15 @@ Rectangle {
                     sideDistanceLabel:              qsTr("Spacing")
                 }
 
-                SectionHeader {
-                    id:                 transectValuesHeader
-                    Layout.fillWidth:   true
-                    text:               transectValuesHeaderName
-                }
+                // SectionHeader {
+                //     id:                 transectValuesHeader
+                //     Layout.fillWidth:   true
+                //     text:               transectValuesHeaderName
+                // }
 
                 Loader {
                     Layout.fillWidth:   true
-                    visible:            transectValuesHeader.checked
+                    // visible:            transectValuesHeader.checked
                     sourceComponent:    transectValuesComponent
 
                     property bool forPresets: false
@@ -125,50 +125,50 @@ Rectangle {
                     visible:            transectValuesHeader.checked
                 }
 
-                SectionHeader {
-                    id:                 statsHeader
-                    Layout.fillWidth:   true
-                    text:               qsTr("Statistics")
-                }
+                // SectionHeader {
+                //     id:                 statsHeader
+                //     Layout.fillWidth:   true
+                //     text:               qsTr("Statistics")
+                // }
 
-                TransectStyleComplexItemStats {
-                    Layout.fillWidth:   true
-                    visible:            statsHeader.checked
-                }
+                // TransectStyleComplexItemStats {
+                //     Layout.fillWidth:   true
+                //     visible:            statsHeader.checked
+                // }
             } // Grid Column
 
             // Camera Tab
-            CameraCalcCamera {
-                Layout.fillWidth:   true
-                visible:            tabBar.currentIndex === 1
-                cameraCalc:         _missionItem.cameraCalc
-            }
+            // CameraCalcCamera {
+            //     Layout.fillWidth:   true
+            //     visible:            tabBar.currentIndex === 1
+            //     cameraCalc:         _missionItem.cameraCalc
+            // }
 
             // Terrain Tab
-            TransectStyleComplexItemTerrainFollow {
-                Layout.fillWidth:   true
-                spacing:            _margin
-                visible:            tabBar.currentIndex === 2
-                missionItem:        _missionItem
-            }
+            // TransectStyleComplexItemTerrainFollow {
+            //     Layout.fillWidth:   true
+            //     spacing:            _margin
+            //     visible:            tabBar.currentIndex === 2
+            //     missionItem:        _missionItem
+            // }
 
             // Presets Tab
-            ColumnLayout {
+           /* ColumnLayout {
                 Layout.fillWidth:   true
                 spacing:            _margin
                 visible:            tabBar.currentIndex === 3
 
-                QGCLabel {
-                    Layout.fillWidth:   true
-                    text:               qsTr("Presets")
-                    wrapMode:           Text.WordWrap
-                }
+                // QGCLabel {
+                //     Layout.fillWidth:   true
+                //     text:               qsTr("Presets")
+                //     wrapMode:           Text.WordWrap
+                // }
 
-                QGCComboBox {
-                    id:                 presetCombo
-                    Layout.fillWidth:   true
-                    model:              _missionItem.presetNames
-                }
+                // QGCComboBox {
+                //     id:                 presetCombo
+                //     Layout.fillWidth:   true
+                //     model:              _missionItem.presetNames
+                // }
 
                 RowLayout {
                     Layout.fillWidth:   true
@@ -236,70 +236,70 @@ Rectangle {
                     Layout.fillWidth:   true
                     visible:            presetsStatsHeader.checked
                 }
-            } // Main editing column
+            }*/ // Main editing column
         } // Top level  Column
 
-        Component {
-            id: savePresetDialog
+        // Component {
+        //     id: savePresetDialog
 
-            QGCPopupDialog {
-                id:         popupDialog
-                title:      qsTr("Save Preset")
-                buttons:    StandardButton.Save | StandardButton.Cancel
+        //     QGCPopupDialog {
+        //         id:         popupDialog
+        //         title:      qsTr("Save Preset")
+        //         buttons:    StandardButton.Save | StandardButton.Cancel
 
-                onAccepted: {
-                    if (presetNameField.text != "") {
-                        _missionItem.savePreset(presetNameField.text.trim())
-                    } else {
-                        preventClose = true
-                    }
-                }
+        //         onAccepted: {
+        //             if (presetNameField.text != "") {
+        //                 _missionItem.savePreset(presetNameField.text.trim())
+        //             } else {
+        //                 preventClose = true
+        //             }
+        //         }
 
-                ColumnLayout {
-                    width:      ScreenTools.defaultFontPixelWidth * 30
-                    spacing:    ScreenTools.defaultFontPixelHeight
+        //         ColumnLayout {
+        //             width:      ScreenTools.defaultFontPixelWidth * 30
+        //             spacing:    ScreenTools.defaultFontPixelHeight
 
-                    QGCLabel {
-                        Layout.fillWidth:   true
-                        text:               qsTr("Save the current settings as a named preset.")
-                        wrapMode:           Text.WordWrap
-                    }
+        //             QGCLabel {
+        //                 Layout.fillWidth:   true
+        //                 text:               qsTr("Save the current settings as a named preset.")
+        //                 wrapMode:           Text.WordWrap
+        //             }
 
-                    QGCLabel {
-                        text: qsTr("Preset Name")
-                    }
+        //             QGCLabel {
+        //                 text: qsTr("Preset Name")
+        //             }
 
-                    QGCTextField {
-                        id:                 presetNameField
-                        Layout.fillWidth:   true
-                        placeholderText:    qsTr("Enter preset name")
+        //             QGCTextField {
+        //                 id:                 presetNameField
+        //                 Layout.fillWidth:   true
+        //                 placeholderText:    qsTr("Enter preset name")
 
-                        Component.onCompleted:  validateText(presetNameField.text)
-                        onTextChanged:          validateText(text)
+        //                 Component.onCompleted:  validateText(presetNameField.text)
+        //                 onTextChanged:          validateText(text)
 
-                        function validateText(text) {
-                            if (text.trim() === "") {
-                                nameError.text = qsTr("Preset name cannot be blank.")
-                                popupDialog.acceptButtonEnabled = false
-                            } else if (text.includes("/")) {
-                                nameError.text = qsTr("Preset name cannot include the \"/\" character.")
-                                popupDialog.acceptButtonEnabled = false
-                            } else {
-                                nameError.text = ""
-                                popupDialog.acceptButtonEnabled = true
-                            }
-                        }
-                    }
+        //                 function validateText(text) {
+        //                     if (text.trim() === "") {
+        //                         nameError.text = qsTr("Preset name cannot be blank.")
+        //                         popupDialog.acceptButtonEnabled = false
+        //                     } else if (text.includes("/")) {
+        //                         nameError.text = qsTr("Preset name cannot include the \"/\" character.")
+        //                         popupDialog.acceptButtonEnabled = false
+        //                     } else {
+        //                         nameError.text = ""
+        //                         popupDialog.acceptButtonEnabled = true
+        //                     }
+        //                 }
+        //             }
 
-                    QGCLabel {
-                        id:                 nameError
-                        Layout.fillWidth:   true
-                        wrapMode:           Text.WordWrap
-                        color:              QGroundControl.globalPalette.warningText
-                        visible:            text !== ""
-                    }
-                }
-            }
-        }
+        //             QGCLabel {
+        //                 id:                 nameError
+        //                 Layout.fillWidth:   true
+        //                 wrapMode:           Text.WordWrap
+        //                 color:              QGroundControl.globalPalette.warningText
+        //                 visible:            text !== ""
+        //             }
+        //         }
+        //     }
+        // }
     }
 }

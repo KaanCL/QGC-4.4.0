@@ -13,11 +13,7 @@ SystemInfo::SystemInfo(){
     timer->start(1000);
 #endif
 
-#ifdef Q_OS_WINDOWS
-    if(GetSystemPowerStatus(&battery_state)){
-        setSys_battary(battery_state.BatteryLifePercent);
-    }
-#endif
+
 
 }
 
