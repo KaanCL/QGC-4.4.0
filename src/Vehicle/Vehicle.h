@@ -255,7 +255,7 @@ public:
     Q_PROPERTY(bool                 requiresGpsFix              READ requiresGpsFix                                                 NOTIFY requiresGpsFixChanged)
     Q_PROPERTY(double               loadProgress                READ loadProgress                                                   NOTIFY loadProgressChanged)
     Q_PROPERTY(bool                 initialConnectComplete      READ isInitialConnectComplete                                       NOTIFY initialConnectComplete)
-
+    Q_PROPERTY(QString flightTime READ flightTime WRITE setFlightTime NOTIFY flightTimeChanged)
     // The following properties relate to Orbit status
     Q_PROPERTY(bool             orbitActive     READ orbitActive        NOTIFY orbitActiveChanged)
     Q_PROPERTY(QGCMapCircle*    orbitMapCircle  READ orbitMapCircle     CONSTANT)
@@ -923,6 +923,9 @@ public:
 
     HealthAndArmingCheckReport* healthAndArmingCheckReport() { return &_healthAndArmingCheckReport; }
 
+    QString flightTime() const;
+    void setFlightTime(const QString &newFlightTime);
+
 public slots:
     void setVtolInFwdFlight                 (bool vtolInFwdFlight);
     void _offlineFirmwareTypeSettingChanged (QVariant varFirmwareType); // Should only be used by MissionControler to set firmware from Plan file
@@ -1031,6 +1034,8 @@ signals:
     void initialConnectComplete         ();
 
     void sensorsParametersResetAck      (bool success);
+
+    void flightTimeChanged();
 
 private slots:
     void _mavlinkMessageReceived            (LinkInterface* link, mavlink_message_t message);
@@ -1509,6 +1514,7 @@ private:
     // We use this to limit above terrain altitude queries based on distance and altitude change
     QGeoCoordinate              _altitudeAboveTerrLastCoord;
     float                       _altitudeAboveTerrLastRelAlt = qQNaN();
+    QString m_flightTime = "00:00:00";
 };
 
 Q_DECLARE_METATYPE(Vehicle::MavCmdResultFailureCode_t)

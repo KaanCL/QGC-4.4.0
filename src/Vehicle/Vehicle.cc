@@ -2431,6 +2431,7 @@ void Vehicle::_flightTimerStop()
 void Vehicle::_updateFlightTime()
 {
     _flightTimeFact.setRawValue((double)_flightTimer.elapsed() / 1000.0);
+    setFlightTime(_flightTimeFact.rawValueString());
 }
 
 void Vehicle::_gotProgressUpdate(float progressValue)
@@ -4502,4 +4503,17 @@ void Vehicle::sendGripperAction(GRIPPER_OPTIONS gripperOption)
         default: 
         break;
     }
+}
+
+QString Vehicle::flightTime() const
+{
+    return m_flightTime;
+}
+
+void Vehicle::setFlightTime(const QString &newFlightTime)
+{
+    if (m_flightTime == newFlightTime)
+        return;
+    m_flightTime = newFlightTime;
+    emit flightTimeChanged();
 }
