@@ -37,12 +37,6 @@ TransectStyleComplexItemEditor {
             columns:            2
 
             QGCLabel { text: qsTr("Angle") }
-            FactTextField {
-                fact:                   missionItem.gridAngle
-                Layout.fillWidth:       true
-                onUpdated:              angleSlider.value = missionItem.gridAngle.value
-            }
-
             QGCSlider {
                 id:                     angleSlider
                 minimumValue:           0

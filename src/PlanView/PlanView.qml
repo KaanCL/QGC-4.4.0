@@ -62,6 +62,10 @@ Item {
 
     property var currentVisualItem : _missionController.currentPlanViewItem
 
+    property bool   _controllerValid:           _planMasterController !== undefined && _planMasterController !== null
+    property bool   _controllerOffline:         _controllerValid ? _planMasterController.offline : true
+    property var    _controllerDirty:           _controllerValid ? _planMasterController.dirty : false
+    property var    _controllerSyncInProgress:  _controllerValid ? _planMasterController.syncInProgress : false
 
     property int currentMissionMode: 0
 
@@ -90,6 +94,7 @@ Item {
     property bool _firstFenceLoadComplete:      false
     property bool _firstRallyLoadComplete:      false
     property bool _firstLoadComplete:           false
+    property real   _controllerProgressPct:     _controllerValid ? _planMasterController.missionController.progressPct : 0
 
     MapFitFunctions {
         id:                         mapFitFunctions  // The name for this id cannot be changed without breaking references outside of this code. Beware!
@@ -376,7 +381,7 @@ Item {
 
         Rectangle{
             id:  rightControls
-            width: ScreenTools.defaultFontPixelWidth * 20
+            width: ScreenTools.defaultFontPixelWidth * 35
             anchors.right:      missionModesRow.right
             anchors.top:        missionModesRow.visible ? missionModesRow.bottom : parent.top
             anchors.topMargin: Screen.width * 0.01
@@ -414,6 +419,7 @@ Item {
           width: Screen.width * 0.1
           anchors.top:parent.top
           anchors.left:parent.left
+          anchors.leftMargin: Screen.width * 0.01
          anchors.topMargin: Screen.width * 0.01
           height: Screen.width * 0.095
           radius: buttonRadius
@@ -1089,20 +1095,24 @@ Item {
 
 }
 
-
-
-
+        Rectangle{
+            id:uploadPanel
+            anchors.top: parent.top
+            width:Screen.width * 0.18
+            height:Screen.height * 0.1
+            color:qgcPal.windowShadeDark
+            anchors.topMargin: Screen.width * 0.01
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: !_controllerOffline && !_controllerSyncInProgress
 
         QGCButton {
             id:          uploadButton
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.topMargin: Screen.width * 0.01
-            text:        _controllerDirty ? qsTr("Upload Required") : qsTr("Upload")
+            text:        _controllerDirty ? qsTr("Yükleme Gerekli") : qsTr("Görev Yükle")
             enabled:     !_controllerSyncInProgress
-            visible:     false//!_controllerOffline && !_controllerSyncInProgress && !uploadCompleteText.visible
-            primary:     _controllerDirty
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             onClicked:   _planMasterController.upload()
+            visible:     !_controllerOffline && !_controllerSyncInProgress && !uploadCompleteText.visible
 
             PropertyAnimation on opacity {
                 easing.type:    Easing.OutQuart
@@ -1114,6 +1124,52 @@ Item {
                 duration:       2000
             }
         }
+
+        QGCLabel {
+            id:                     uploadCompleteText
+            anchors.fill:           parent
+            font.pointSize:         ScreenTools.largeFontPointSize
+            horizontalAlignment:    Text.AlignHCenter
+            verticalAlignment:      Text.AlignVCenter
+            text:                   qsTr("Başarılı")
+            visible:                false
+        }
+
+
+        Rectangle {
+            id:             progressBar
+            anchors.left:   parent.left
+            anchors.bottom: parent.bottom
+            height:         4
+            width:          _controllerProgressPct * parent.width
+            color:          qgcPal.colorGreen
+            visible:        false
+        }
+
+
+    }
+
+        Connections {
+            target: _controllerValid ? _planMasterController.missionController : null
+            onProgressPctChanged: {
+                if (_controllerProgressPct === 1) {
+                    uploadCompleteText.visible = true
+                    progressBar.visible = false
+                    resetProgressTimer.start()
+                } else if (_controllerProgressPct > 0) {
+                    progressBar.visible = true
+                }
+            }
+        }
+
+        Timer {
+            id:             resetProgressTimer
+            interval:       5000
+            onTriggered: {
+                uploadCompleteText.visible = false
+            }
+        }
+
 
         //-----------------------------------------------------------
         // Right pane for mission editing controls
@@ -1263,29 +1319,31 @@ Item {
 
        Item{
            id:missionPanel
-           width: _rightPanelWidth
+           width: ScreenTools.defaultFontPixelWidth * 35
            height: {
                if(currentVisualItem.isTakeoffItem){
-                  return  Screen.width * 0.08 //ScreenTools.defaultFontPixelHeight * 5
+                  return  Screen.width * 0.14 //ScreenTools.defaultFontPixelHeight * 5
                }
                    else if (currentVisualItem.isSimpleItem){
-                   return Screen.width * 0.08 //ScreenTools.defaultFontPixelHeight * 5
+                   return Screen.width * 0.14 //ScreenTools.defaultFontPixelHeight * 5
                    }
                        else if (currentVisualItem.isSurveyItem && !currentVisualItem.wizardMode){
-                       return Screen.width * 0.12//ScreenTools.defaultFontPixelHeight * 10
+                       return Screen.width * 0.24//ScreenTools.defaultFontPixelHeight * 10
                        }
                            else if (currentVisualItem.wizardMode ){
-                           return Screen.width * 0.07 //ScreenTools.defaultFontPixelHeight * 4
+                           return Screen.width * 0.14 //ScreenTools.defaultFontPixelHeight * 4
                            }
                                else if (currentVisualItem.isLandCommand ){
-                               return Screen.width * 0.06//ScreenTools.defaultFontPixelHeight * 3
+                               return Screen.width * 0.14//ScreenTools.defaultFontPixelHeight * 3
                                }
                                    else{
-                                   return ScreenTools.defaultFontPixelHeight * 8
+                                   return Screen.width * 0.18
                                    }
            }
-           anchors.bottom:   licenseLabel.top
-           anchors.horizontalCenter: terrainStatus.horizontalCenter
+           anchors.bottom:    terrainStatus.top
+           anchors.bottomMargin: Screen.width * 0.01
+           anchors.rightMargin: Screen.width * 0.01
+           anchors.right: parent.right
            visible:                _editingLayer == _layerMission && !planControlColapsed
            QGCListView {
                id:                 missionItemEditorListViewPanel
@@ -1323,9 +1381,9 @@ Item {
             anchors.margins:    _toolsMargin
             anchors.leftMargin: 0
             anchors.left:       mapScale.left
-            anchors.right:      parent.right
+            anchors.right:      rightToolStrip.right
             anchors.bottom:     parent.bottom
-            height:             ScreenTools.defaultFontPixelHeight * 6
+            height:             ScreenTools.defaultFontPixelHeight * 4.5
             missionController:  _missionController
             visible:            _internalVisible && _editingLayer === _layerMission && QGroundControl.corePlugin.options.showMissionStatus
 

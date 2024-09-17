@@ -48,7 +48,7 @@ Item {
     property real _zorderSplitHandle:   QGroundControl.zOrderMapItems + 2
     property real _zorderCenterHandle:  QGroundControl.zOrderMapItems + 1   // Lowest such that drag or split takes precedence
 
-    readonly property string _polygonToolsText: qsTr("Polygon Tools")
+   // readonly property string _polygonToolsText: qsTr("Polygon Tools")
     readonly property string _traceText:        qsTr("Click in the map to add vertices. Click 'Done Tracing' when finished.")
 
     function addCommonVisuals() {
@@ -585,48 +585,48 @@ Item {
 
         PlanEditToolbar {
             anchors.horizontalCenter:       mapControl.left
-            anchors.horizontalCenterOffset: mapControl.centerViewport.left + (mapControl.centerViewport.width / 2)
+            anchors.horizontalCenterOffset: mapControl.centerViewport.left + (mapControl.centerViewport.width / 3 )
             y:                              mapControl.centerViewport.top
             availableWidth:                 mapControl.centerViewport.width
 
             QGCButton {
                 _horizontalPadding: 0
-                text:               qsTr("Basic")
+                text:               qsTr("Çokgen"/*"Basic"*/)
                 visible:            !mapPolygon.traceMode
                 onClicked:          _resetPolygon()
             }
 
             QGCButton {
                 _horizontalPadding: 0
-                text:               qsTr("Circular")
+                text:               qsTr("Dairesel"/*"Circular"*/)
                 visible:            !mapPolygon.traceMode
                 onClicked:          _resetCircle()
             }
 
-            QGCButton {
-                _horizontalPadding: 0
-                text:               mapPolygon.traceMode ? qsTr("Done Tracing") : qsTr("Trace")
-                onClicked: {
-                    if (mapPolygon.traceMode) {
-                        if (mapPolygon.count < 3) {
-                            _restorePreviousVertices()
-                        }
-                        mapPolygon.traceMode = false
-                    } else {
-                        _saveCurrentVertices()
-                        _circleMode = false
-                        mapPolygon.traceMode = true
-                        mapPolygon.clear();
-                    }
-                }
-            }
+            // QGCButton {
+            //     _horizontalPadding: 0
+            //     text:               mapPolygon.traceMode ? qsTr("Done Tracing") : qsTr("Trace")
+            //     onClicked: {
+            //         if (mapPolygon.traceMode) {
+            //             if (mapPolygon.count < 3) {
+            //                 _restorePreviousVertices()
+            //             }
+            //             mapPolygon.traceMode = false
+            //         } else {
+            //             _saveCurrentVertices()
+            //             _circleMode = false
+            //             mapPolygon.traceMode = true
+            //             mapPolygon.clear();
+            //         }
+            //     }
+            // }
 
-            QGCButton {
-                _horizontalPadding: 0
-                text:               qsTr("Load KML/SHP...")
-                onClicked:          kmlOrSHPLoadDialog.openForLoad()
-                visible:            !mapPolygon.traceMode
-            }
+            // QGCButton {
+            //     _horizontalPadding: 0
+            //     text:               qsTr("Load KML/SHP...")
+            //     onClicked:          kmlOrSHPLoadDialog.openForLoad()
+            //     visible:            !mapPolygon.traceMode
+            // }
         }
     }
 

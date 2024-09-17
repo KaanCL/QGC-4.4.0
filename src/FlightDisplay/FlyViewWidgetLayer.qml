@@ -102,7 +102,7 @@ Item {
     property bool flagCommunicationLost: false
     property bool guidedType :_guidedController.showTakeoff || !_guidedController.showLand
 
-
+    property bool missionStartStop:_guidedController.showPause || !_guidedController.showContinueMission
 
     property string _commLostText:      qsTr("İletişim Kayboldu"/*"Communication Lost"*/)
     property string _readyToFlyText:    qsTr("Uçuşa Hazır"/*"Ready To Fly"*/)
@@ -461,6 +461,37 @@ Column{
        Image{
         id:returnImage
         source:"/InstrumentValueIcons/rtl-white.svg"
+        width: buttonImageSize
+        height: buttonImageSize
+        anchors.horizontalCenter:parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+       }
+}
+
+
+     Rectangle {
+       id:stopAction
+       color: Qt.rgba(qgcPal.window.r, qgcPal.window.g, qgcPal.window.b, 0.9)
+       width: buttonSize
+       height: buttonSize
+       radius : buttonSize / 2
+       anchors.right: parent.right
+
+       MouseArea{
+           anchors.fill: parent
+           onClicked: {_guidedController.closeAll()
+                          if(missionStartStop){
+                        _guidedController.confirmAction(_guidedController.actionPause)}
+                          else{
+                          _guidedController.confirmAction(_guidedController.actionContinueMission)
+                          }
+                }
+
+     }
+
+       Image{
+        id:stopActionImage
+        source: missionStartStop ? "/res/pause-mission.svg" : "/res/action.svg"
         width: buttonImageSize
         height: buttonImageSize
         anchors.horizontalCenter:parent.horizontalCenter

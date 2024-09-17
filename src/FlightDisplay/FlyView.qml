@@ -68,8 +68,9 @@ Item {
     property var    _videoManager:        QGroundControl.videoManager
     property var    _videoSettings:       _settingsManager.videoSettings
     property var     currentRtspUrl :     _videoSettings.rtspUrl.rawValue
-    property var    currentSource :       _videoSettings.videoSource.rawValue
+    property var     currentSource :      _videoSettings.videoSource.rawValue
     property bool    videoStream:         _videoManager.hasVideo
+    property bool    streamStatus:        QGroundControl.videoManager.decoding
 
     function changeRtspUrl(){
 
@@ -214,11 +215,11 @@ Item {
 
       Text{
          text:{
-             if(_activeVehicle && videoStream){
+             if(streamStatus){
                  currentRtspUrl == _videoRtspUrl ? "Video" : "Termal"
              }
              else{
-                 currentSource
+                "Video Yayını Yok"
              }
          }
          font.weight: Font.Medium
@@ -238,7 +239,8 @@ Item {
 
     QGCPipOverlay {
         id:                     _pipOverlay
-        anchors.right:           guidedValueSlider.visible ? guidedValueSlider.left : parent.right
+        anchors.left: parent.left
+        // anchors.right:           guidedValueSlider.visible ? guidedValueSlider.left : parent.right
         anchors.bottom:         parent.bottom
         anchors.margins:        _toolsMargin
         item1IsFullSettingsKey: "MainFlyWindowIsMap"

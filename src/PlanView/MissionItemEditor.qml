@@ -17,7 +17,7 @@ import QGroundControl.Palette       1.0
 Rectangle {
     id:             _root
     height:         editorLoader.visible ? (editorLoader.y + editorLoader.height + _innerMargin) : (topRowLayout.y + topRowLayout.height + _margin)
-    color:         "black"// _currentItem ? qgcPal.missionItemEditor : qgcPal.windowShade
+    color:        qgcPal.windowShadeDark // _currentItem ? qgcPal.missionItemEditor : qgcPal.windowShade
     radius:         _radius
     opacity:        _currentItem ? 1.0 : 0.7
     border.width:   _readyForSave ? 0 : 2
@@ -45,7 +45,7 @@ Rectangle {
     property bool   _readyForSave:              missionItem.readyForSaveState === VisualMissionItem.ReadyForSave
 
     readonly property real  _editFieldWidth:    Math.min(width - _innerMargin * 2, ScreenTools.defaultFontPixelWidth * 12)
-    readonly property real  _margin:            ScreenTools.defaultFontPixelWidth / 2
+    readonly property real  _margin:            ScreenTools.defaultFontPixelWidth
     readonly property real  _innerMargin:       2
     readonly property real  _radius:            ScreenTools.defaultFontPixelWidth / 2
     readonly property real  _hamburgerSize:     commandPicker.height * 0.75
@@ -81,10 +81,10 @@ Rectangle {
 
     Row {
         id:                 topRowLayout
-        anchors.margins:    _margin
+       // anchors.margins:    _margin
         anchors.left:       parent.left
         anchors.top:        parent.top
-        spacing:            _margin
+        //spacing:            _margin
 
         Rectangle {
             id:                     notReadyForSaveIndicator

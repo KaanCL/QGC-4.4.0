@@ -65,41 +65,6 @@ Rectangle {
         spacing:            _margin
 
         QGCLabel {
-            text:           qsTr("All Altitudes")
-            font.pointSize: ScreenTools.smallFontPointSize
-        }
-        MouseArea {
-            Layout.preferredWidth:  childrenRect.width
-            Layout.preferredHeight: childrenRect.height
-            enabled:                _noMissionItemsAdded
-
-            onClicked: {
-                var removeModes = []
-                var updateFunction = function(altMode){ _missionController.globalAltitudeMode = altMode }
-                if (!_controllerVehicle.supportsTerrainFrame) {
-                    removeModes.push(QGroundControl.AltitudeModeTerrainFrame)
-                }
-                altModeDialogComponent.createObject(mainWindow, { rgRemoveModes: removeModes, updateAltModeFn: updateFunction }).open()
-            }
-
-            RowLayout {
-                spacing: ScreenTools.defaultFontPixelWidth
-                enabled: _noMissionItemsAdded
-
-                QGCLabel {
-                    id:     altModeLabel
-                    text:   QGroundControl.altitudeModeShortDescription(_missionController.globalAltitudeMode)
-                }
-                QGCColoredImage {
-                    height:     ScreenTools.defaultFontPixelHeight / 2
-                    width:      height
-                    source:     "/res/DropArrow.svg"
-                    color:      altModeLabel.color
-                }
-            }
-        }
-
-        QGCLabel {
             text:           qsTr("Initial Waypoint Alt")
             font.pointSize: ScreenTools.smallFontPointSize
         }
