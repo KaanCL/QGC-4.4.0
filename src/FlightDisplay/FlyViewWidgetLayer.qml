@@ -500,18 +500,18 @@ Column{
 }
 
  }
-FlyViewInstrumentPanel {
-      id:                         instrumentPanel
-      anchors.margins:            _toolsMargin
-      anchors.top:                 parent.top
-      anchors.right:              rightCol.right
-      width:                      _rightPanelWidth
-      spacing:                    _toolsMargin
-       anchors.topMargin: Screen.width  * 0.01
-      visible:                   false// QGroundControl.corePlugin.options.flyView.showInstrumentPanel && multiVehiclePanelSelector.showSingleVehiclePanel
-      availableHeight:            parent.height - y - _toolsMargin
+// FlyViewInstrumentPanel {
+//       id:                         instrumentPanel
+//       anchors.top:                 parent.top
+//       anchors.left:                _header.right
+//       anchors.leftMargin:          Screen.width  * 0.08
+//       anchors.right:              rightCol.right
+//       width:                      _rightPanelWidth
+//        anchors.topMargin:         Screen.width  * 0.01
+//       visible:                    QGroundControl.corePlugin.options.flyView.showInstrumentPanel && multiVehiclePanelSelector.showSingleVehiclePanel
+//       availableHeight:            parent.height - y - _toolsMargin
 
-  }
+//   }
 
 
     Row{

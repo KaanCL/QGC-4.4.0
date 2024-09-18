@@ -18,7 +18,7 @@ import QGroundControl.FlightMap     1.0
 import QGroundControl.FlightDisplay 1.0
 import QGroundControl.Palette       1.0
 
-ColumnLayout {
+Column{
     id:         root
 
     property real   _innerRadius:           (width - (_topBottomMargin * 3)) / 4
@@ -31,7 +31,7 @@ ColumnLayout {
     Rectangle {
         id:                 visualInstrument
         height:             _outerRadius * 2
-        Layout.fillWidth:   true
+        width:              _outerRadius * 2
         radius:             _outerRadius
         color:              qgcPal.window
 
@@ -40,20 +40,10 @@ ColumnLayout {
         QGCAttitudeWidget {
             id:                     attitude
             anchors.rightMargin:     _topBottomMargin
-            anchors.right:           parent.right
+            anchors.centerIn: parent
             size:                   _innerRadius * 2
             vehicle:                globals.activeVehicle
-            anchors.verticalCenter: parent.verticalCenter
         }
-
-        // QGCCompassWidget {
-        //     id:                     compass
-        //     anchors.leftMargin:     _spacing
-        //     anchors.left:           attitude.right
-        //     size:                   _innerRadius * 2
-        //     vehicle:                globals.activeVehicle
-        //     anchors.verticalCenter: parent.verticalCenter
-        // }
     }
 
     TerrainProgress {

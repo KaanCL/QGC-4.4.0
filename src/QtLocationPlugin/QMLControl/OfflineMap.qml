@@ -24,9 +24,11 @@ import QGroundControl.QGCMapEngineManager   1.0
 import QGroundControl.FactSystem            1.0
 import QGroundControl.FactControls          1.0
 
-Item {
+Rectangle {
     id:             offlineMapView
     anchors.fill:   parent
+    color:qgcPal.windowShadeDark
+
 
     property var    _currentSelection:  null
 

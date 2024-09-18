@@ -15,9 +15,10 @@ import QGroundControl.Palette               1.0
 
 Rectangle {
     id:                 _root
-    anchors.fill:       parent
-    anchors.margins:    ScreenTools.defaultFontPixelWidth
+    color: qgcPal.windowShadeDark
+    anchors.margins:    ScreenTools.defaultFontPixelWidthS
 
+    QGCPalette { id: qgcPal }
     property Fact _savePath:                            QGroundControl.settingsManager.appSettings.savePath
     property Fact _appFontPointSize:                    QGroundControl.settingsManager.appSettings.appFontPointSize
     property Fact _userBrandImageIndoor:                QGroundControl.settingsManager.brandImageSettings.userBrandImageIndoor

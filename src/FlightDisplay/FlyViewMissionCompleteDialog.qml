@@ -59,7 +59,7 @@ Item {
 
         QGCPopupDialog {
             id:         missionCompleteDialog
-            title:      qsTr("Flight Plan complete")
+            title:      qsTr("Uçuş planı tamamlandı"/*"Flight Plan complete"*/)
             buttons:    StandardButton.Close
 
             property var activeVehicleCopy: _activeVehicle
@@ -82,7 +82,7 @@ Item {
 
                 QGCButton {
                     Layout.fillWidth:   true
-                    text:               qsTr("Remove plan from vehicle")
+                    text:               qsTr("Planı araçtan kaldır"/*"Remove plan from vehicle"*/)
                     visible:            !_activeVehicle.communicationLost// && !_activeVehicle.apmFirmware  // ArduPilot has a bug somewhere with mission clear
                     onClicked: {
                         _planController.removeAllFromVehicle()
@@ -93,7 +93,7 @@ Item {
                 QGCButton {
                     Layout.fillWidth:   true
                     Layout.alignment:   Qt.AlignHCenter
-                    text:               qsTr("Leave plan on vehicle")
+                    text:               qsTr("Planı araçta tut"/*"Leave plan on vehicle"*/)
                     onClicked:          missionCompleteDialog.close()
 
                 }
@@ -112,7 +112,7 @@ Item {
                     QGCButton {
                         Layout.fillWidth:   true
                         Layout.alignment:   Qt.AlignHCenter
-                        text:               qsTr("Resume Mission From Waypoint %1").arg(globals.guidedControllerFlyView._resumeMissionIndex)
+                        text:               qsTr("Göreve Waypoint %1'den devam et"/*"Resume Mission From Waypoint %1"*/).arg(globals.guidedControllerFlyView._resumeMissionIndex)
 
                         onClicked: {
                             globals.guidedControllerFlyView.executeAction(globals.guidedControllerFlyView.actionResumeMission, null, null)

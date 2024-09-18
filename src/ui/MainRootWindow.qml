@@ -171,7 +171,7 @@ ApplicationWindow {
 
 
     function showMapSettings(){
-        showTool(qsTr("Harita Ayarları"),"MapSettings.qml","/res/QGCLogoWhite")
+        showTool(qsTr("Harita Ayarları"),"OfflineMap.qml","/res/QGCLogoWhite")
 
     }
 
