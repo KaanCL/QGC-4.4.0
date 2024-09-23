@@ -118,8 +118,11 @@ Button {
                 text:                       control.text
                 color:                      _currentContentColor
                 anchors.horizontalCenter:   parent.horizontalCenter
+                fontPointSize: fontSize
+                wrapMode: Text.Wrap
                 font.bold:                  !innerImage.visible && !innerImageColorful.visible
                 opacity:                    !innerImage.visible ? 0.8 : 1.0
+
             }
         }
     }

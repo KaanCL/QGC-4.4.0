@@ -26,7 +26,7 @@ Item {
     property alias  model:              repeater.model
     property real   maxHeight           ///< Maximum height for control, determines whether text is hidden to make control shorter
     property alias  title:              titleLabel.text
-    property var    fontSize:           ScreenTools.smallFontPointSize
+    property var    fontSize:           Screen.width / 160
 
     property var _dropPanel: dropPanel
 
@@ -70,7 +70,7 @@ Item {
                 anchors.left:           parent.left
                 anchors.right:          parent.right
                 horizontalAlignment:    Text.AlignHCenter
-                font.pointSize:         ScreenTools.smallFontPointSize
+                fontPointSize:       fontSize
                 visible:                title != ""
             }
 
@@ -83,7 +83,7 @@ Item {
                     anchors.right:      toolStripColumn.right
                     height:             width
                     radius:             width//ScreenTools.defaultFontPixelWidth / 2
-                    fontPointSize:      _root.fontSize
+                    fontPointSize:      fontSize
                     toolStripAction:    modelData
                     dropPanel:          _dropPanel
                     onDropped:          _root.dropped(index)

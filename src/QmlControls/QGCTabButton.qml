@@ -31,6 +31,7 @@ T.TabButton {
     padding: 6
     spacing: 6
 
+
     //icon.width: 24
     icon.height: ScreenTools.defaultFontPixelHeight
     icon.color: checked ? qgcPal.buttonHighlightText : qgcPal.buttonText
@@ -48,8 +49,9 @@ T.TabButton {
     }
 
     background: Rectangle {
+        radius: 5
         implicitHeight: 40
-        color: checked ? qgcPal.buttonHighlight : qgcPal.button
+        color: checked ? qgcPal.buttonHighlight : qgcPal.windowShadeDark
         /*color: Color.blend(control.checked ? control.palette.window : control.palette.dark,
                                              control.palette.mid, control.down ? 0.5 : 0.0)*/
     }

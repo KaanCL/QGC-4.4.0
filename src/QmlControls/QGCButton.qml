@@ -20,6 +20,8 @@ Button {
     property bool   iconLeft:       false
     property real   backRadius:     0
     property real   heightFactor:   0.5
+    property real layerInfo
+    property real   buttonIndex:   -1
     property real   fontWeight:     Font.Normal // default for qml Text
     property string iconSource
 
@@ -40,9 +42,19 @@ Button {
         radius:         backRadius
         border.width:   showBorder ? 1 : 0
         border.color:   qgcPal.buttonText
-        color:    _showHighlight ?
-                            qgcPal.buttonHighlight :
-                            (primary ? qgcPal.primaryButton : qgcPal.button)
+        color:
+            if(buttonIndex !=-1){
+                if((layerInfo == 0 && buttonIndex == 0 ) || (layerInfo == 1 && buttonIndex == 1)){
+                     qgcPal.buttonHighlight
+                }
+                else{
+                     qgcPal.windowShadeDark
+                }
+            }
+             else{
+             _showHighlight ? qgcPal.buttonHighlight : (primary ? qgcPal.primaryButton : qgcPal.button)
+             }
+
     }
 
     contentItem: Item {
@@ -73,9 +85,17 @@ Button {
             font.pointSize:         pointSize
             font.family:            ScreenTools.normalFontFamily
             font.weight:            fontWeight
-            color:                  _showHighlight ?
-                                        qgcPal.buttonHighlightText :
-                                        (primary ? qgcPal.primaryButtonText : qgcPal.buttonText)
+            color:
+                if(buttonIndex !=-1){
+                    if((layerInfo == 0 && buttonIndex == 0 ) || (layerInfo == 1 && buttonIndex == 1)){
+                       qgcPal.windowShadeDark
+                    }
+                    else{
+                         "white"
+                    }
+                }
+                else{_showHighlight ? qgcPal.buttonHighlightText :(primary ? qgcPal.primaryButtonText : "white")
+          }
         }
     }
 }
