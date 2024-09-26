@@ -28,7 +28,7 @@ public:
 
     QTimer *timer;
 
-
+     void getSystemTime();
 
     QString sys_Time() const;
     void setSys_Time(const QString &newSys_Time);
@@ -40,6 +40,13 @@ signals:
 private:
     int m_sys_Battery;
     QString m_sys_Time;
+
+
+#ifdef Q_OS_WIN
+     SYSTEM_POWER_STATUS battery_state;
+     SYSTEMTIME time_state;
+#endif
 };
+
 
 #endif // SYSTEMINFO_H

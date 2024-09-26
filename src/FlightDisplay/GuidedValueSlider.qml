@@ -21,8 +21,8 @@ Rectangle {
     property var  _flyViewSettings:     QGroundControl.settingsManager.flyViewSettings
     property real _vehicleAltitude:     _activeVehicle ? _activeVehicle.altitudeRelative.rawValue : 0
     property bool _fixedWing:           _activeVehicle ? _activeVehicle.fixedWing : false
-    property real _sliderMaxVal:        _flyViewSettings ? _flyViewSettings.guidedMaximumAltitude.rawValue : 0
-    property real _sliderMinVal:        _flyViewSettings ? _flyViewSettings.guidedMinimumAltitude.rawValue : 0
+    property real _sliderMaxVal:        20//_flyViewSettings ? _flyViewSettings.guidedMaximumAltitude.rawValue : 0
+    property real _sliderMinVal:        0//_flyViewSettings ? _flyViewSettings.guidedMinimumAltitude.rawValue : 0
     property real _sliderCenterValue:   _vehicleAltitude
     property string _displayText:       ""
     property bool _altSlider:         true

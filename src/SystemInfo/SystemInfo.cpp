@@ -13,6 +13,17 @@ SystemInfo::SystemInfo(){
     timer->start(1000);
 #endif
 
+#ifdef Q_OS_WIN
+    if(GetSystemPowerStatus(&battery_state)){
+    set_Sys_Battery(battery_state.BatteryLifePercent);
+    }
+
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &SystemInfo::getSystemTime);
+    timer->start(1000);
+
+#endif
+
 
 
 }
@@ -34,7 +45,20 @@ QString SystemInfo::sys_Time() const
 {
     return m_sys_Time;
 }
+void SystemInfo::getSystemTime(){
 
+    QString time ;
+
+#ifdef Q_OS_WIN
+
+
+    GetLocalTime(&time_state);
+    time =(time_state.wHour < 10 ? "0" + QString::number(time_state.wHour) : QString::number(time_state.wHour)) + ":" +
+           (time_state.wMinute < 10 ? "0" + QString::number(time_state.wMinute) : QString::number(time_state.wMinute));
+#endif
+
+    setSys_Time(time);
+}
 void SystemInfo::setSys_Time(const QString &newSys_Time)
 {
     if (m_sys_Time == newSys_Time)

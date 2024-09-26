@@ -2271,7 +2271,7 @@ QStringList MissionController::complexMissionItemNames(void) const
     QStringList complexItems;
 
     complexItems.append(SurveyComplexItem::name);
-    complexItems.append(CorridorScanComplexItem::name);
+    // complexItems.append(CorridorScanComplexItem::name);
     // if (_controllerVehicle->multiRotor() || _controllerVehicle->vtol()) {
     //     complexItems.append(StructureScanComplexItem::name);
     // }

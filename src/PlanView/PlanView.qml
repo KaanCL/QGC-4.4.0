@@ -721,7 +721,7 @@ Item {
                         checkable:          true
                     },
                     ToolStripAction {
-                        text:                  _singleComplexItem ? _missionController.complexMissionItemNames[0] : qsTr("Şablon"/*"Pattern"*/)
+                        text:                 qsTr("Gözlem") //_singleComplexItem ? _missionController.complexMissionItemNames[0] : qsTr("Şablon"/*"Pattern"*/)
                         iconSource:         "/qmlimages/MapDrawShape.svg"
                         enabled:            _missionController.flyThroughCommandsAllowed
                         visible:            toolStrip._isMissionLayer && currentMissionMode == 1

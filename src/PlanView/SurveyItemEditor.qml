@@ -15,7 +15,7 @@ import QGroundControl.FlightMap     1.0
 
 TransectStyleComplexItemEditor {
     transectAreaDefinitionComplete: missionItem.surveyAreaPolygon.isValid
-    transectAreaDefinitionHelp:     qsTr("Use the Polygon Tools to create the polygon which outlines your survey area.")
+    transectAreaDefinitionHelp:     qsTr("Gözlem alanınızı belirlemek için Çokgen Araçlarını kullanarak alanın sınırlarını çizen bir çokgen oluşturun"/*"Use the Polygon Tools to create the polygon which outlines your survey area."*/)
     transectValuesHeaderName:       qsTr("Transects")
     transectValuesComponent:        _transectValuesComponent
     presetsTransectValuesComponent: _transectValuesComponent
