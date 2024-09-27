@@ -87,7 +87,7 @@ Ensure that the following versions are installed on your system:
 ## 5. java.lang.NoClassDefFoundError: Could not initialize class org.codehaus.groovy.vmplugin.v7.Java7 Error
 
 ### Error
-If you encounter a **Java 7** related error, such as:
+If you encounter a **Java 7** related error, such as: java.lang.NoClassDefFoundError: Could not initialize class org.codehaus.groovy.vmplugin.v7.Java7 Error
 ### Solution
 1. **Clone the Configuration Repository**: 
    To resolve this error, clone the following repository which contains the necessary configuration files:https://github.com/KaanCL/QGC-4.4.0-AndroidConfig
